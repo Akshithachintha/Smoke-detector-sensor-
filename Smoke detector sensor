@@ -1,0 +1,60 @@
+#include <Wire.h> 
+#include <LiquidCrystal_I2C.h>
+
+const int smokeSensorPin = A0;
+const int buzzerPin = 7;
+const int relayPin = 6;
+const int ledPin = 8;
+
+const int normalThreshold = 200;
+const int mediumThreshold = 400;
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+void setup() {
+  pinMode(smokeSensorPin, INPUT);
+  pinMode(buzzerPin, OUTPUT);
+  pinMode(relayPin, OUTPUT);
+  pinMode(ledPin, OUTPUT);
+
+  Serial.begin(9600);
+  lcd.begin();
+  lcd.backlight();
+  lcd.setCursor(0, 0);
+  lcd.print("Smoke Detector");
+  delay(2000);
+  lcd.clear();
+}
+
+void loop() {
+  int smokeLevel = analogRead(smokeSensorPin);
+  Serial.print("Smoke Level: ");
+  Serial.println(smokeLevel);
+
+  lcd.setCursor(0, 0);
+  lcd.print("Smoke Level:");
+
+  if (smokeLevel < normalThreshold) {
+    lcd.setCursor(0, 1);
+    lcd.print("Status: Normal   ");
+    digitalWrite(buzzerPin, LOW);
+    digitalWrite(ledPin, LOW);
+    digitalWrite(relayPin, LOW);
+  }
+  else if (smokeLevel < mediumThreshold) {
+    lcd.setCursor(0, 1);
+    lcd.print("Status: Medium   ");
+    digitalWrite(buzzerPin, HIGH);
+    digitalWrite(ledPin, LOW);
+    digitalWrite(relayPin, LOW);
+  }
+  else {
+    lcd.setCursor(0, 1);
+    lcd.print("Status: HIGH     ");
+    digitalWrite(buzzerPin, HIGH);
+    digitalWrite(ledPin, HIGH);
+    digitalWrite(relayPin, HIGH);
+  }
+
+  delay(1000);
+}

@@ -27,12 +27,7 @@ void setup() {
 }
 
 void loop() {
-  int smokeLevel = analogRead(smokeSensorPin);
-  Serial.print("Smoke Level: ");
-  Serial.println(smokeLevel);
 
-  lcd.setCursor(0, 0);
-  lcd.print("Smoke Level:");
 
   if (smokeLevel < normalThreshold) {
     lcd.setCursor(0, 1);
